@@ -133,22 +133,6 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
    init {
    onCreate()
    }
-    private fun replayOriginLocation() {
-          with(mapboxNavigation.mapboxReplayer) {
-              play()
-              pushEvents(
-                  listOf(
-                      ReplayRouteMapper.mapToUpdateLocation(
-                          Date().time.toDouble(),
-                          routeCoordinates.first()
-                      )
-                  )
-              )
-              playFirstLocation()
-              playbackSpeed(3.0)
-          }
-      }
-
     override fun requestLayout() {
         super.requestLayout()
         post(measureAndLayout)
@@ -193,12 +177,6 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
                                enabled = true
                            }
          binding.mapView.mapboxMap.loadStyle(NavigationStyles.NAVIGATION_DAY_STYLE){
-         if(shouldSimulateRoute){
-          replayOriginLocation()
-         }
-         else{
-          setCameraPositionToOrigin()
-         }
          startRoute()
          }
     }
@@ -206,10 +184,6 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
           mapboxNavigation.registerRoutesObserver(routesObserver)
           mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
           mapboxNavigation.registerLocationObserver(locationObserver)
-          if(shouldSimulateRoute){
-           replayProgressObserver = ReplayProgressObserver(mapboxNavigation.mapboxReplayer)
-           mapboxNavigation.registerRouteProgressObserver(replayProgressObserver)
-          }
           mapboxNavigation.startTripSession()
           if (origin == null || destination == null) {
              sendErrorToReact("origin and destination are required")
@@ -223,9 +197,6 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
      private fun setNavigationRoutes(routes: List<NavigationRoute>) {
         binding.actionButton.isVisible = false
         mapboxNavigation.setNavigationRoutes(routes)
-        if(shouldSimulateRoute){
-        startSimulation(routes.first().directionsRoute)
-        }
         binding.tripProgressView.isVisible = false
      }
 
@@ -247,7 +218,6 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
              mapboxNavigation.unregisterRoutesObserver(routesObserver)
              mapboxNavigation.unregisterRouteProgressObserver(routeProgressObserver)
              mapboxNavigation.unregisterLocationObserver(locationObserver)
-             mapboxNavigation.unregisterRouteProgressObserver(replayProgressObserver)
              mapboxNavigation.unregisterArrivalObserver(arrivalObserver)
          }
      private val routesObserver: RoutesObserver = RoutesObserver { routeUpdateResult ->
@@ -338,21 +308,9 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
           mapboxNavigation.registerRoutesObserver(routesObserver)
           mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
           mapboxNavigation.registerLocationObserver(locationObserver)
-           mapboxNavigation.registerArrivalObserver(arrivalObserver)
-           if(shouldSimulateRoute){
-            replayProgressObserver = ReplayProgressObserver(mapboxNavigation.mapboxReplayer)
-            mapboxNavigation.registerRouteProgressObserver(replayProgressObserver)
-          }
+          mapboxNavigation.registerArrivalObserver(arrivalObserver)
           startRoute()
       }
-    private fun startSimulation(route: DirectionsRoute) {
-            mapboxNavigation.mapboxReplayer.stop()
-            mapboxNavigation.mapboxReplayer.clearEvents()
-            val replayData = replayRouteMapper.mapDirectionsRouteGeometry(route)
-            mapboxNavigation.mapboxReplayer.pushRealLocation(0.0)
-            mapboxNavigation.mapboxReplayer.play()
-            mapboxNavigation.startReplayTripSession()
-        }
     fun setOrigin(origin: Point?) {
         this.origin = origin
     }
