@@ -8,7 +8,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:7.2.2"
+    classpath "com.android.tools.build:gradle:7.2.1"
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
@@ -20,9 +20,6 @@ def isNewArchitectureEnabled() {
 
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
-
-
-def appProject = rootProject.allprojects.find { it.plugins.hasPlugin('com.android.application') }
 
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
@@ -36,13 +33,37 @@ def getExtOrIntegerDefault(name) {
   return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["MapboxNavigation_" + name]).toInteger()
 }
 
+def supportsNamespace() {
+  def parsed = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')
+  def major = parsed[0].toInteger()
+  def minor = parsed[1].toInteger()
+
+  // Namespace support was added in 7.3.0
+  return (major == 7 && minor >= 3) || major >= 8
+}
+
 android {
+  if (supportsNamespace()) {
+    namespace "com.mapboxnavigation"
+
+    sourceSets {
+      main {
+        manifest.srcFile "src/main/AndroidManifestNew.xml"
+      }
+    }
+  }
+
   compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
 
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+
+  }
+  buildFeatures {
+    buildConfig true
+    viewBinding true
   }
   buildTypes {
     release {
@@ -59,15 +80,19 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
-  // Add the block below if you're using Kotlin
-  kotlinOptions {
-      jvmTarget = "1.8"
+  sourceSets {
+    main {
+      if (isNewArchitectureEnabled()) {
+        java.srcDirs += [
+          "src/newarch",
+          // This is needed to build Kotlin project with NewArch enabled
+          "${project.buildDir}/generated/source/codegen/java"
+        ]
+      } else {
+        java.srcDirs += ["src/oldarch"]
+      }
+    }
   }
-
-   buildFeatures {
-      viewBinding true
-  }
-
 }
 
 repositories {
@@ -81,19 +106,27 @@ dependencies {
   // For < 0.71, this will be from the local maven repo
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
+  implementation "com.mapbox.navigationcore:navigation:3.0.2"
+  implementation "com.mapbox.navigationcore:ui-components:3.0.2"
+  implementation "androidx.constraintlayout:constraintlayout:2.1.4"
   implementation "com.facebook.react:react-native:+"
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-
-  // mapbox dependencies
-  implementation "com.mapbox.navigation:android:2.17.8"
-  implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-  implementation 'androidx.cardview:cardview:1.0.0'
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation "androidx.core:core-ktx:1.9.0"
+  implementation "com.google.android.material:material:1.7.0"
+  implementation "androidx.appcompat:appcompat:1.5.1"
+  implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+  implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+  implementation "androidx.cardview:cardview:1.0.0"
+  implementation "com.google.android.gms:play-services-location:20.0.0"
+  implementation "com.squareup.leakcanary:leakcanary-android:2.9.1"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
 }
 
 if (isNewArchitectureEnabled()) {
   react {
     jsRootDir = file("../src/")
     libraryName = "MapboxNavigationView"
-    codegenJavaPackageName = "com.homee.mapboxnavigation"
+    codegenJavaPackageName = "com.mapboxnavigation"
   }
 }
