@@ -190,6 +190,7 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
           }
           val coordinatesList = mutableListOf<Point>()
           this.origin?.let { coordinatesList.add(it) }
+          this.waypoints?.let { coordinatesList.addAll(it) }
           this.destination?.let { coordinatesList.add(it) }
           fetchRoute(coordinatesList)
         }
@@ -316,6 +317,9 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
 
     fun setDestination(destination: Point?) {
        this.destination = destination
+    }
+    fun setWaypoints(waypoints: List<Point>) {
+            this.waypoints = waypoints
     }
     fun setShouldSimulateRoute(shouldSimulateRoute: Boolean) {
             this.shouldSimulateRoute = shouldSimulateRoute

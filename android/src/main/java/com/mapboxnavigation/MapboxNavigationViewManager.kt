@@ -54,6 +54,23 @@ class MapboxNavigationViewManager(private var mCallerContext: ReactApplicationCo
         }
         view.setOrigin(Point.fromLngLat(sources.getDouble(0), sources.getDouble(1)))
       }
+       @ReactProp(name = "waypoints")
+        fun setWaypoints(view: MapboxNavigationView, waypointsArray: ReadableArray?) {
+            waypointsArray?.let {
+                val waypoints = mutableListOf<Point>()
+                for (i in 0 until it.size()) {
+                    val waypointArray = it.getArray(i)
+                    if (waypointArray !== null && waypointArray.size() >= 2) {
+                        val longitude = waypointArray.getDouble(0)
+                        val latitude = waypointArray.getDouble(1)
+                        waypoints.add(Point.fromLngLat(longitude, latitude))
+                    }
+                }
+
+                view.setWaypoints(waypoints)
+            }
+        }
+
       @ReactProp(name = "shouldSimulateRoute")
        fun setShouldSimulateRoute(view: MapboxNavigationView, shouldSimulateRoute: Boolean) {
          view.setShouldSimulateRoute(shouldSimulateRoute)
