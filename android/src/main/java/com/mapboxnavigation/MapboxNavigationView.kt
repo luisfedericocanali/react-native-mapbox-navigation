@@ -93,7 +93,6 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
            ))
        }
    private val locale = Locale.getDefault()
-   private lateinit var replayProgressObserver: ReplayProgressObserver
    private lateinit var speechApi: MapboxSpeechApi
    private val replayRouteMapper = ReplayRouteMapper()
    private val routeCoordinates = listOf(
