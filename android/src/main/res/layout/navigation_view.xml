@@ -50,6 +50,7 @@
     android:layout_height="90dp"
     android:layout_margin="35dp"
     android:visibility="invisible"
+    style="@style/MapboxCustomManeuverStyle"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
