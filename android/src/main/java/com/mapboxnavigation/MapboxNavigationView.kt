@@ -195,7 +195,6 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
           fetchRoute(coordinatesList)
         }
      private fun setNavigationRoutes(routes: List<NavigationRoute>) {
-        binding.actionButton.isVisible = false
         mapboxNavigation.setNavigationRoutes(routes)
         binding.tripProgressView.isVisible = false
      }
@@ -330,7 +329,6 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
                     .applyDefaultNavigationOptions()
                     .alternatives(false)
                     .coordinatesList(coordinates)
-                    .layersList(listOf(mapboxNavigation.getZLevel(), null))
                     .steps(true)
                     .build(),
 
