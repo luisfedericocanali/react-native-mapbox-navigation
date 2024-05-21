@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<style name="MapboxCustomManeuverStyle" parent="MapboxStyleManeuverView">
-    <item name="maneuverViewBackgroundColor">#058A0A</item>
-    <item name="subManeuverViewBackgroundColor">#046808</item>
-    <item name="upcomingManeuverViewBackgroundColor">#046808</item>
-</style>
+<resources>
+    <style name="MapboxCustomManeuverStyle" parent="MapboxStyleManeuverView">
+        <item name="maneuverViewBackgroundColor">#058A0A</item>
+        <item name="subManeuverViewBackgroundColor">#046808</item>
+        <item name="upcomingManeuverViewBackgroundColor">#046808</item>
+    </style>
+</resources>
