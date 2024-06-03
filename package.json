@@ -1,7 +1,7 @@
 {
-  "name": "react-native-mapbox-navigation",
-  "version": "0.1.0",
-  "description": "For fun",
+  "name": "react-native-mapbox-navigation-v3",
+  "version": "0.1.4",
+  "description": "React Native Navigation using v3 of mapbox navigation sdk for android",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
