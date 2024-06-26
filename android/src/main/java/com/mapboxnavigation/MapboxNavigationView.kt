@@ -81,51 +81,51 @@ import java.util.Locale
 
 @OptIn(ExperimentalPreviewMapboxNavigationAPI::class)
 class MapboxNavigationView(context: ReactContext, private val accessToken: String?) : FrameLayout(context) {
-   private var origin: Point? = null
-   private var waypoints: List<Point>? = null
-   private var destination: Point? = null
-   private lateinit var mapboxNavigation: MapboxNavigation
-   private var shouldSimulateRoute = false
-   private val binding: NavigationViewBinding = NavigationViewBinding.inflate(LayoutInflater.from(context), this, true)
-   private val maneuverApi by lazy {
-           MapboxManeuverApi(MapboxDistanceFormatter(
-               DistanceFormatterOptions.Builder(context).build()
-           ))
-       }
-   private val locale = Locale.getDefault()
-   private lateinit var speechApi: MapboxSpeechApi
-   private val replayRouteMapper = ReplayRouteMapper()
-   private val routeCoordinates = listOf(
-       Point.fromLngLat(-58.46, -34.58),
-       Point.fromLngLat(-58.49, -34.65),
-   )
-   private val navigationLocationProvider = NavigationLocationProvider()
-   private val options: MapboxRouteLineViewOptions by lazy {
-       MapboxRouteLineViewOptions.Builder(context)
-           .routeLineBelowLayerId("road-label-navigation")
-           .build()
-   }
-   private val routeLineView by lazy {
-       MapboxRouteLineView(options)
-   }
-   private val routeLineApi: MapboxRouteLineApi by lazy {
-       MapboxRouteLineApi(MapboxRouteLineApiOptions.Builder().build())
-   }
-   private val tripProgressFormatter: TripProgressUpdateFormatter by lazy {
-       val distanceFormatterOptions =
-           DistanceFormatterOptions.Builder(context).build()
-       TripProgressUpdateFormatter.Builder(context)
-           .distanceRemainingFormatter(DistanceRemainingFormatter(distanceFormatterOptions))
-           .timeRemainingFormatter(TimeRemainingFormatter(context))
-           .estimatedTimeToArrivalFormatter(EstimatedTimeToArrivalFormatter(context))
-           .build()
-   }
-   private val tripProgressApi: MapboxTripProgressApi by lazy {
-       MapboxTripProgressApi(tripProgressFormatter)
-   }
-   private val speedInfoApi: MapboxSpeedInfoApi by lazy {
-       MapboxSpeedInfoApi()
-   }
+    private var origin: Point? = null
+    private var waypoints: List<Point>? = null
+    private var destination: Point? = null
+    private lateinit var mapboxNavigation: MapboxNavigation
+    private var shouldSimulateRoute = false
+    private val binding: NavigationViewBinding = NavigationViewBinding.inflate(LayoutInflater.from(context), this, true)
+    private val maneuverApi by lazy {
+        MapboxManeuverApi(MapboxDistanceFormatter(
+            DistanceFormatterOptions.Builder(context).build()
+        ))
+    }
+    private val locale = Locale.getDefault()
+    private lateinit var speechApi: MapboxSpeechApi
+    private val replayRouteMapper = ReplayRouteMapper()
+    private val routeCoordinates = listOf(
+        Point.fromLngLat(-58.46, -34.58),
+        Point.fromLngLat(-58.49, -34.65),
+    )
+    private val navigationLocationProvider = NavigationLocationProvider()
+    private val options: MapboxRouteLineViewOptions by lazy {
+        MapboxRouteLineViewOptions.Builder(context)
+            .routeLineBelowLayerId("road-label-navigation")
+            .build()
+    }
+    private val routeLineView by lazy {
+        MapboxRouteLineView(options)
+    }
+    private val routeLineApi: MapboxRouteLineApi by lazy {
+        MapboxRouteLineApi(MapboxRouteLineApiOptions.Builder().build())
+    }
+    private val tripProgressFormatter: TripProgressUpdateFormatter by lazy {
+        val distanceFormatterOptions =
+            DistanceFormatterOptions.Builder(context).build()
+        TripProgressUpdateFormatter.Builder(context)
+            .distanceRemainingFormatter(DistanceRemainingFormatter(distanceFormatterOptions))
+            .timeRemainingFormatter(TimeRemainingFormatter(context))
+            .estimatedTimeToArrivalFormatter(EstimatedTimeToArrivalFormatter(context))
+            .build()
+    }
+    private val tripProgressApi: MapboxTripProgressApi by lazy {
+        MapboxTripProgressApi(tripProgressFormatter)
+    }
+    private val speedInfoApi: MapboxSpeedInfoApi by lazy {
+        MapboxSpeedInfoApi()
+    }
     private val distanceFormatterOptions: DistanceFormatterOptions by lazy {
            DistanceFormatterOptions.Builder(context).build()
        }
@@ -137,10 +137,10 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
         post(measureAndLayout)
     }
     private val measureAndLayout = Runnable {
-            measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
-            layout(left, top, right, bottom)
-        }
+        measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
+        layout(left, top, right, bottom)
+    }
 
 
     private fun sendErrorToReact(error: String?) {
@@ -150,34 +150,33 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
          reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit("onError", event)
      }
     @SuppressLint("MissingPermission")
-        fun onCreate() {
-       mapboxNavigation = if (MapboxNavigationProvider.isCreated()) {
-                   MapboxNavigationProvider.retrieve()
-               } else if (shouldSimulateRoute) {
-                   MapboxNavigationProvider.create(
-                       NavigationOptions.Builder(context)
-                           .build()
-                   )
-               } else {
-                   MapboxNavigationProvider.create(
-                       NavigationOptions.Builder(context)
-                       .build()
-                   )
-               }
-           binding.mapView.location.apply {
-                               setLocationProvider(navigationLocationProvider)
-
-                               locationPuck = LocationPuck2D(
-                                   bearingImage = ImageHolder.Companion.from(
-                                       R.drawable.mapbox_navigation_puck_icon
-                                   )
-                               )
-                               puckBearingEnabled = true
-                               enabled = true
-                           }
-         binding.mapView.mapboxMap.loadStyle(NavigationStyles.NAVIGATION_DAY_STYLE){
-         startRoute()
-         }
+    fun onCreate() {
+        mapboxNavigation = if (MapboxNavigationProvider.isCreated()) {
+            MapboxNavigationProvider.retrieve()
+        } else if (shouldSimulateRoute) {
+            MapboxNavigationProvider.create(
+                NavigationOptions.Builder(context)
+                    .build()
+            )
+        } else {
+            MapboxNavigationProvider.create(
+                NavigationOptions.Builder(context)
+                    .build()
+            )
+        }
+        binding.mapView.location.apply {
+            setLocationProvider(navigationLocationProvider)
+            locationPuck = LocationPuck2D(
+                bearingImage = ImageHolder.Companion.from(
+                    R.drawable.mapbox_navigation_puck_icon
+                )
+            )
+            puckBearingEnabled = true
+            enabled = true
+        }
+        binding.mapView.mapboxMap.loadStyle(NavigationStyles.NAVIGATION_DAY_STYLE) {
+            startRoute()
+        }
     }
     private fun startRoute() {
           mapboxNavigation.registerRoutesObserver(routesObserver)
@@ -197,110 +196,112 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
      private fun setNavigationRoutes(routes: List<NavigationRoute>) {
         mapboxNavigation.setNavigationRoutes(routes)
         binding.tripProgressView.isVisible = false
-     }
+    }
 
-     private fun updateCamera(point: Point, bearing: Double? = null) {
-         binding.mapView.camera.flyTo(
-                  CameraOptions.Builder()
-                    .center(point)
-                      .bearing(bearing)
-                      .zoom(17.0)
-                      .pitch(0.0)
-                      .build(),
-                  MapAnimationOptions.mapAnimationOptions {
-                      duration(1000L)
-                  }
-              )
-     }
-     override fun onDetachedFromWindow() {
-             super.onDetachedFromWindow()
-             mapboxNavigation.unregisterRoutesObserver(routesObserver)
-             mapboxNavigation.unregisterRouteProgressObserver(routeProgressObserver)
-             mapboxNavigation.unregisterLocationObserver(locationObserver)
-             mapboxNavigation.unregisterArrivalObserver(arrivalObserver)
-         }
-     private val routesObserver: RoutesObserver = RoutesObserver { routeUpdateResult ->
-            routeLineApi.setNavigationRoutes(
-                routeUpdateResult.navigationRoutes
-            ) { value ->
-                binding.mapView.mapboxMap.style?.apply {
-                    routeLineView.renderRouteDrawData(this, value)
-                }
+    private fun updateCamera(point: Point, bearing: Double? = null) {
+        binding.mapView.camera.flyTo(
+            CameraOptions.Builder()
+                .center(point)
+                .bearing(bearing)
+                .zoom(17.0)
+                .pitch(0.0)
+                .build(),
+            MapAnimationOptions.mapAnimationOptions {
+                duration(1000L)
             }
-     }
-     private fun setCameraPositionToOrigin() {
-             val startingLocation = AndroidLocation(LocationManager.GPS_PROVIDER)
-              sendErrorToReact("here2 $startingLocation")
-         }
-       private val locationObserver = object : LocationObserver {
+        )
+    }
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mapboxNavigation.unregisterRoutesObserver(routesObserver)
+        mapboxNavigation.unregisterRouteProgressObserver(routeProgressObserver)
+        mapboxNavigation.unregisterLocationObserver(locationObserver)
+        mapboxNavigation.unregisterArrivalObserver(arrivalObserver)
+        mapboxNavigation.stopTripSession()
+        mapboxNavigation.onDestroy()
+    }
+    private val routesObserver: RoutesObserver = RoutesObserver { routeUpdateResult ->
+        routeLineApi.setNavigationRoutes(
+            routeUpdateResult.navigationRoutes
+        ) { value ->
+            binding.mapView.mapboxMap.style?.apply {
+                routeLineView.renderRouteDrawData(this, value)
+            }
+        }
+    }
+    private fun setCameraPositionToOrigin() {
+        val startingLocation = AndroidLocation(LocationManager.GPS_PROVIDER)
+        sendErrorToReact("here2 $startingLocation")
+    }
+    private val locationObserver = object : LocationObserver {
 
-              override fun onNewRawLocation(rawLocation: Location) {
-                  // Not implemented in this example. However, if you want you can also
-                  // use this callback to get location updates, but as the name suggests
-                  // these are raw location updates which are usually noisy.
-              }
+        override fun onNewRawLocation(rawLocation: Location) {
+            // Not implemented in this example. However, if you want you can also
+            // use this callback to get location updates, but as the name suggests
+            // these are raw location updates which are usually noisy.
+        }
 
-              override fun onNewLocationMatcherResult(locationMatcherResult: LocationMatcherResult) {
-                  val enhancedLocation = locationMatcherResult.enhancedLocation
-                  navigationLocationProvider.changePosition(
-                      enhancedLocation,
-                      locationMatcherResult.keyPoints,
-                  )
-                  updateCamera(
-                      Point.fromLngLat(
-                          enhancedLocation.longitude,
-                          enhancedLocation.latitude
-                      ),
-                      enhancedLocation.bearing
-                  )
-                  val info = speedInfoApi.updatePostedAndCurrentSpeed(
-                      locationMatcherResult,
-                      distanceFormatterOptions
-                  )
-                if (info != null) {
-                      binding.speedLimitView.isVisible = true
-                      binding.speedLimitView.requestLayout()
-                      binding.speedLimitView.invalidate()
-                      binding.speedLimitView.render(info)
-                  }
-              }
-          }
-      private val arrivalObserver = object : ArrivalObserver {
+        override fun onNewLocationMatcherResult(locationMatcherResult: LocationMatcherResult) {
+            val enhancedLocation = locationMatcherResult.enhancedLocation
+            navigationLocationProvider.changePosition(
+                enhancedLocation,
+                locationMatcherResult.keyPoints,
+            )
+            updateCamera(
+                Point.fromLngLat(
+                    enhancedLocation.longitude,
+                    enhancedLocation.latitude
+                ),
+                enhancedLocation.bearing
+            )
+            val info = speedInfoApi.updatePostedAndCurrentSpeed(
+                locationMatcherResult,
+                distanceFormatterOptions
+            )
+            if (info != null) {
+                binding.speedLimitView.isVisible = true
+                binding.speedLimitView.requestLayout()
+                binding.speedLimitView.invalidate()
+                binding.speedLimitView.render(info)
+            }
+        }
+    }
+    private val arrivalObserver = object : ArrivalObserver {
 
-             override fun onWaypointArrival(routeProgress: RouteProgress) {
-                 // do something when the user arrives at a waypoint
-             }
+        override fun onWaypointArrival(routeProgress: RouteProgress) {
+            // do something when the user arrives at a waypoint
+        }
 
-             override fun onNextRouteLegStart(routeLegProgress: RouteLegProgress) {
-                 // do something when the user starts a new leg
-             }
+        override fun onNextRouteLegStart(routeLegProgress: RouteLegProgress) {
+            // do something when the user starts a new leg
+        }
 
-             override fun onFinalDestinationArrival(routeProgress: RouteProgress) {
-                val reactContext = context as ReactContext
-                val event = Arguments.createMap()
-                event.putString("onArrive", "")
-                reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit("onArrive", event)
-             }
-         }
+        override fun onFinalDestinationArrival(routeProgress: RouteProgress) {
+            val reactContext = context as ReactContext
+            val event = Arguments.createMap()
+            event.putString("onArrive", "")
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit("onArrive", event)
+        }
+    }
 
-     private val routeProgressObserver = RouteProgressObserver { progress ->
-             val tripProgress = tripProgressApi.getTripProgress(progress)
-             binding.tripProgressView.render(tripProgress)
-             val maneuvers = maneuverApi.getManeuvers(progress)
-             maneuvers.fold(
-                 { error ->
-                     Toast.makeText(
-                         context,
-                         error.errorMessage,
-                         Toast.LENGTH_SHORT
-                     ).show()
-                 },
-                 {
-                     binding.maneuverView.visibility = View.VISIBLE
-                     binding.maneuverView.renderManeuvers(maneuvers)
-                 }
-             )
-         }
+    private val routeProgressObserver = RouteProgressObserver { progress ->
+        val tripProgress = tripProgressApi.getTripProgress(progress)
+        binding.tripProgressView.render(tripProgress)
+        val maneuvers = maneuverApi.getManeuvers(progress)
+        maneuvers.fold(
+            { error ->
+                Toast.makeText(
+                    context,
+                    error.errorMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            {
+                binding.maneuverView.visibility = View.VISIBLE
+                binding.maneuverView.renderManeuvers(maneuvers)
+            }
+        )
+    }
 
       override fun onAttachedToWindow() {
           super.onAttachedToWindow()
@@ -315,7 +316,7 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
     }
 
     fun setDestination(destination: Point?) {
-       this.destination = destination
+        this.destination = destination
     }
     fun setWaypoints(waypoints: List<Point>) {
             this.waypoints = waypoints
@@ -343,23 +344,22 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
                         setNavigationRoutes(routes)
                     }
 
-                    override fun onFailure(
-                        reasons: List<RouterFailure>,
-                        routeOptions: RouteOptions
-                    ) {
-                       Log.e("MapboxNavigationView", "Route request failed: $reasons")
-                       sendErrorToReact("Route request failed: $reasons")
-                    }
-
-                    override fun onCanceled(
-                        routeOptions: RouteOptions,
-                        @RouterOrigin routerOrigin: String
-                    ) {
-                       Log.d("MapboxNavigationView", "Route request canceled")
-                                      sendErrorToReact("Route request canceled")
-                    }
+                override fun onFailure(
+                    reasons: List<RouterFailure>,
+                    routeOptions: RouteOptions
+                ) {
+                    Log.e("MapboxNavigationView", "Route request failed: $reasons")
+                    sendErrorToReact("Route request failed: $reasons")
                 }
-            )
-        }
 
+                override fun onCanceled(
+                    routeOptions: RouteOptions,
+                    @RouterOrigin routerOrigin: String
+                ) {
+                    Log.d("MapboxNavigationView", "Route request canceled")
+                    sendErrorToReact("Route request canceled")
+                }
+            }
+        )
+    }
 }
