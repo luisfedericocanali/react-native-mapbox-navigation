@@ -218,7 +218,6 @@ class MapboxNavigationView(context: ReactContext, private val accessToken: Strin
         mapboxNavigation.unregisterLocationObserver(locationObserver)
         mapboxNavigation.unregisterArrivalObserver(arrivalObserver)
         mapboxNavigation.stopTripSession()
-        mapboxNavigation.onDestroy()
     }
     private val routesObserver: RoutesObserver = RoutesObserver { routeUpdateResult ->
         routeLineApi.setNavigationRoutes(
