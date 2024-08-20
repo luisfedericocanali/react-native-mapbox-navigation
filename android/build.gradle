@@ -106,8 +106,8 @@ dependencies {
   // For < 0.71, this will be from the local maven repo
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
-  implementation "com.mapbox.navigationcore:navigation:3.0.2"
-  implementation "com.mapbox.navigationcore:ui-components:3.0.2"
+  implementation "com.mapbox.navigationcore:navigation:3.3.0"
+  implementation "com.mapbox.navigationcore:ui-components:3.3.0"
   implementation "androidx.constraintlayout:constraintlayout:2.1.4"
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
