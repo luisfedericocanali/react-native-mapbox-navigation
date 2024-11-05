@@ -2,6 +2,9 @@ import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNati
 import type { ViewProps } from 'react-native';
 
 interface NativeProps extends ViewProps {
+  origin?: [number, number];
+  destination?: [number, number];
+  waypoints?: [number, number][];
   color?: string;
 }
 

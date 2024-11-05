@@ -1,6 +1,6 @@
 {
   "name": "react-native-mapbox-navigation-v3",
-  "version": "0.1.5",
+  "version": "0.1.8",
   "description": "React Native Navigation using v3 of mapbox navigation sdk for android",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
