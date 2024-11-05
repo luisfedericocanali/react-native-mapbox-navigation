@@ -4,7 +4,7 @@ import type { ViewProps } from 'react-native';
 interface NativeProps extends ViewProps {
   origin?: [number, number];
   destination?: [number, number];
-  waypoints?: [number, number][];
+  waypoints?: number[][];
   color?: string;
 }
 
